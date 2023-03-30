@@ -1,5 +1,6 @@
 galaxy_info:
   author: thehedgefrog
+  role_name: coder_v2_install
   namespace: thehedgefrog
   description: Ansible role to install Coder v2 on Ubuntu
 
