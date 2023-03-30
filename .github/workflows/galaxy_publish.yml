@@ -13,16 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
-        run: pip install ansible
-
       - name: Publish to Ansible Galaxy
-        run: ansible-galaxy role import ${{ github.repository }}
-        env:
-          ANSIBLE_FORCE_COLOR: 1
-          GALAXY_API_KEY: ${{ secrets.GALAXY_API_KEY }}
+        uses: robertdebock/galaxy-action@1.2.0
+        with:
+          galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
