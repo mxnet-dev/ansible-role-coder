@@ -1,0 +1,24 @@
+galaxy_info:
+  author: thehedgefrog
+  namespace: thehedgefrog
+  description: Ansible role to install Coder v2 on Ubuntu
+
+  license: MIT
+
+  min_ansible_version: '2.9'
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - focal
+        - bionic
+
+  galaxy_tags:
+    - coder
+    - codeserver
+    - developer
+    - ide
+    - ubuntu
+
+dependencies: []
