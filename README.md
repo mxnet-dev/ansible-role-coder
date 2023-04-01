@@ -1,7 +1,7 @@
 Coder v2 Install
 =========
 
-This Ansible role installs Coder v2 (code-server) on Ubuntu. It takes care of downloading the appropriate `.deb` package (either `amd64` or `arm64`), installing it, configuring the `coder.env` file, and enabling the service in `systemctl`.
+This Ansible role installs Coder v2 on Ubuntu. It takes care of downloading the appropriate `.deb` package (either `amd64` or `arm64`), installing it, configuring the `coder.env` file, and enabling the service in `systemctl`.
 
 Requirements
 ------------
