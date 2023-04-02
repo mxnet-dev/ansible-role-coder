@@ -63,7 +63,7 @@
     - coder_http_port < 1024
 
 - name: Set 'cap_net_bind_service=+ep' capability on the 'coder' executable
-  ansible.general.capabilities:
+  community.general.capabilities:
     path: "{{ coder_full_path_result.stdout }}"
     capability: cap_net_bind_service=+ep
   when:
