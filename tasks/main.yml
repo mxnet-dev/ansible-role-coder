@@ -43,7 +43,7 @@
   register: coder_which_result
   changed_when: false
   ignore_errors: true
-  when: coder_http_port < 1024
+  when: coder_http_port | int < 1024
 
 - name: Resolve the full path of the 'coder' executable
   ansible.builtin.command: readlink -f "{{ coder_which_result.stdout }}"
@@ -51,16 +51,16 @@
   changed_when: false
   when:
     - coder_which_result.stdout != ""
-    - coder_http_port < 1024
+    - coder_http_port | int < 1024
   ignore_errors: true
 
 - name: Check current capabilities of 'coder' executable
-  ansible.builtin.stat:
-    path: "{{ coder_full_path_result.stdout }}"
-  register: coder_stat_result
+  ansible.builtin.command: getcap "{{ coder_full_path_result.stdout }}"
+  register: coder_capabilities_result
+  changed_when: false
   when:
     - coder_full_path_result.stdout != ""
-    - coder_http_port < 1024
+    - coder_http_port | int < 1024
 
 - name: Set 'cap_net_bind_service=+ep' capability on the 'coder' executable
   community.general.capabilities:
@@ -68,8 +68,8 @@
     capability: cap_net_bind_service=+ep
   when:
     - coder_full_path_result.stdout != ""
-    - "'cap_net_bind_service=+ep' not in coder_stat_result.stat.capabilities"
-    - coder_http_port < 1024
+    - "'cap_net_bind_service=+ep' not in coder_capabilities_result.stdout"
+    - coder_http_port | int < 1024
 
 - name: Create /etc/coder directory
   ansible.builtin.file:
