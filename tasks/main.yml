@@ -89,3 +89,4 @@
     name: coder
     state: started
     enabled: true
+  notify: Restart Coder
