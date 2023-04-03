@@ -34,6 +34,44 @@
     deb: "/tmp/coder.deb"
     state: present
 
+- name: Extract the port number from coder_http_address
+  ansible.builtin.set_fact:
+    coder_http_port: "{{ coder_http_address.split(':')[-1] | int }}"
+
+- name: Find the path of the 'coder' executable
+  ansible.builtin.command: which coder
+  register: coder_which_result
+  changed_when: false
+  ignore_errors: true
+  when: coder_http_port | int < 1024
+
+- name: Resolve the full path of the 'coder' executable
+  ansible.builtin.command: readlink -f "{{ coder_which_result.stdout }}"
+  register: coder_full_path_result
+  changed_when: false
+  when:
+    - coder_which_result.stdout != ""
+    - coder_http_port | int < 1024
+  ignore_errors: true
+
+- name: Check current capabilities of 'coder' executable
+  ansible.builtin.command: getcap "{{ coder_full_path_result.stdout }}"
+  register: coder_capabilities_result
+  changed_when: false
+  failed_when: coder_capabilities_result.rc not in [0, 1]
+  when:
+    - coder_full_path_result.stdout != ""
+    - coder_http_port | int < 1024
+
+- name: Set 'cap_net_bind_service=+ep' capability on the 'coder' executable
+  community.general.capabilities:
+    path: "{{ coder_full_path_result.stdout }}"
+    capability: cap_net_bind_service=+ep
+  when:
+    - coder_full_path_result.stdout != ""
+    - coder_capabilities_result.rc == 1
+    - coder_http_port | int < 1024
+
 - name: Create /etc/coder directory
   ansible.builtin.file:
     path: /etc/coder.d
