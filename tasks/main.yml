@@ -1,7 +1,7 @@
 ---
 - name: Update apt cache
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: true
 
 - name: Install dependencies
   ansible.builtin.apt:
@@ -14,7 +14,7 @@
 - name: Fetch latest Coder release from GitHub
   ansible.builtin.uri:
     url: https://api.github.com/repos/coder/coder/releases/latest
-    return_content: yes
+    return_content: true
     headers:
       Accept: application/vnd.github+json
   register: github_release
@@ -25,7 +25,8 @@
 
 - name: Download Coder v2 .deb package
   ansible.builtin.get_url:
-    url: "{{ github_release.json.assets | selectattr('name', 'match', 'coder_.*_linux_' + deb_package_name + '\\.deb$') | map(attribute='browser_download_url') | first }}"
+    url: "{{ github_release.json.assets | selectattr('name', 'match', 'coder_.*_linux_' + deb_package_name + '\\.deb$') \
+         | map(attribute='browser_download_url') | first }}"
     dest: "/tmp/coder.deb"
     mode: '0755'
 
