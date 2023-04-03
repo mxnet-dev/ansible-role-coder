@@ -58,6 +58,7 @@
   ansible.builtin.command: getcap "{{ coder_full_path_result.stdout }}"
   register: coder_capabilities_result
   changed_when: false
+  failed_when: coder_capabilities_result.rc not in [0, 1]
   when:
     - coder_full_path_result.stdout != ""
     - coder_http_port | int < 1024
@@ -68,7 +69,7 @@
     capability: cap_net_bind_service=+ep
   when:
     - coder_full_path_result.stdout != ""
-    - "'cap_net_bind_service=+ep' not in coder_capabilities_result.stdout"
+    - coder_capabilities_result.rc == 1
     - coder_http_port | int < 1024
 
 - name: Create /etc/coder directory
