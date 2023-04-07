@@ -9,6 +9,8 @@ Any configuration change can be done by adding the variables in your playbook an
 
 You should make sure to upgrade `coder` with this role, or remember to run it after upgrading, else it will not be able to bind on a port < 1024 by default.
 
+The role can also uninstall Coder, by setting the `coder_action` variable to `uninstall`.
+
 Requirements
 ------------
 
@@ -62,7 +64,7 @@ This playbook will install Coder with custom HTTP and HTTPS ports, using the pro
 ```yaml
 - hosts: servers
   vars:
-    coder_uninstall: true
+    coder_action: "uninstall"
   roles:
     - thehedgefrog.coder_v2_install
 ```
