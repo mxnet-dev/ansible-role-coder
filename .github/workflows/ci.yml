@@ -15,6 +15,7 @@ on:
 
 jobs:
   filter:
+    name: Pre-Test Filter
     runs-on: ubuntu-latest
     outputs:
       default: ${{ steps.filter.outputs.default }}
