@@ -1,0 +1,20 @@
+- name: Check current capabilities of 'coder' executable
+  ansible.builtin.command:
+    cmd: getcap "{{ coder_full_path_result.stdout }}" || echo ''
+  register: coder_capabilities_result
+  changed_when: false
+  when:
+    - coder_full_path_result.stdout != ""
+    - coder_http_port | int < 1024
+
+- name: Set 'cap_net_bind_service=+ep' capability on the 'coder' executable if needed
+  ansible.builtin.shell: |
+      if ! getcap "{{ coder_full_path_result.stdout }}" | grep -q "cap_net_bind_service=+ep"; then
+        setcap 'cap_net_bind_service=+ep' "{{ coder_full_path_result.stdout }}"
+        getcap "{{ coder_full_path_result.stdout }}" > /tmp/coder_capabilities
+      fi
+  args:
+    creates: /tmp/coder_capabilities
+  when:
+    - coder_full_path_result.stdout != ""
+    - coder_http_port | int < 1024
