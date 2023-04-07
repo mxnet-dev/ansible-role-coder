@@ -56,21 +56,24 @@
   ignore_errors: true
 
 - name: Check current capabilities of 'coder' executable
-  ansible.builtin.command: getcap "{{ coder_full_path_result.stdout }}"
+  ansible.builtin.command:
+    cmd: getcap "{{ coder_full_path_result.stdout }}" || echo ''
   register: coder_capabilities_result
   changed_when: false
-  failed_when: coder_capabilities_result.rc not in [0, 1]
   when:
     - coder_full_path_result.stdout != ""
     - coder_http_port | int < 1024
 
-- name: Set 'cap_net_bind_service=+ep' capability on the 'coder' executable
-  community.general.capabilities:
-    path: "{{ coder_full_path_result.stdout }}"
-    capability: cap_net_bind_service=+ep
+- name: Set 'cap_net_bind_service=+ep' capability on the 'coder' executable if needed
+  ansible.builtin.shell: |
+      if ! getcap "{{ coder_full_path_result.stdout }}" | grep -q "cap_net_bind_service=+ep"; then
+        setcap 'cap_net_bind_service=+ep' "{{ coder_full_path_result.stdout }}"
+        getcap "{{ coder_full_path_result.stdout }}" > /tmp/coder_capabilities
+      fi
+  args:
+    creates: /tmp/coder_capabilities
   when:
     - coder_full_path_result.stdout != ""
-    - coder_capabilities_result.rc == 1
     - coder_http_port | int < 1024
 
 - name: Create /etc/coder directory
