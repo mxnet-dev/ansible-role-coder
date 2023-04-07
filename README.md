@@ -32,9 +32,10 @@ Dependencies
 
 None.
 
-Example Playbook
-----------------
+Example Playbooks
+-----------------
 
+**Simplest Playbook - Install**
 ```yaml
 - hosts: servers
   vars:
@@ -42,6 +43,30 @@ Example Playbook
   roles:
     - thehedgefrog.coder_v2_install
 ```
+This playbook will install Coder with the default configuration, using the provided access URL.
+
+**Customized Install - Different Ports and Access URL**
+```yaml
+- hosts: servers
+  vars:
+    coder_access_url: "https://your-coder-access-url.example.com"
+    coder_tls_enable: true
+    coder_http_port: 8080
+    coder_https_port: 8443
+  roles:
+    - thehedgefrog.coder_v2_install
+```
+This playbook will install Coder with custom HTTP and HTTPS ports, using the provided access URL.
+
+**Uninstall Coder**
+```yaml
+- hosts: servers
+  vars:
+    coder_uninstall: true
+  roles:
+    - thehedgefrog.coder_v2_install
+```
+This playbook will uninstall Coder by setting the `coder_uninstall` variable to `true`. This will remove the service, .deb package, and configuration files.
 
 License
 -------
