@@ -84,6 +84,7 @@
     src: coder.env.j2
     dest: /etc/coder.d/coder.env
     mode: '0644'
+  notify: Restart Coder
 
 - name: Enable and start Coder v2 service
   ansible.builtin.systemd:
