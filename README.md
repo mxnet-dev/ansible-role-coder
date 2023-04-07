@@ -20,6 +20,7 @@ Role Variables
 
 | Variable          | Default      | Required | Description                                           |
 |-------------------|--------------|:--------:|-------------------------------------------------------|
+| `coder_action`    | `install`     |    ✅    | The action for the Coder role (`install` or `uninstall`). |
 | `coder_access_url`| *(none)*     |    ✅    | The access URL for the Coder instance.                |
 | `coder_http_address` | `0.0.0.0:80` |  ❌  | The HTTP address for the Coder instance.              |
 | `coder_tls_enable`| `false`      |    ❌    | Whether to enable TLS for the Coder instance.         |
